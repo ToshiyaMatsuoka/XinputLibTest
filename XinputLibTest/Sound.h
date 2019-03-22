@@ -13,35 +13,58 @@
 class Sound
 {
 public:
+
+	enum SoundType {
+		ALL_TYPE,
+		BGM,
+		SE,
+	};
+
+	struct SoundKey {
+		const TCHAR* Key;
+		SoundType Type;
+	};
+
 	Sound();
 
 	~Sound();
 
-	VOID AddFile(const TCHAR* pFilePath, const TCHAR* pKey);
+	SoundLib::PlayingStatus GetStatus(const WCHAR * pKey) const;
 
-	VOID AddSimultaneousFile(const TCHAR* pFilePath, const TCHAR* pKey);
+	void AddFile(const TCHAR* pFilePath, const TCHAR* pKey, SoundType type);
 
-	VOID OneShotSimultaneous(const TCHAR* pKey);
+	void AddSimultaneousFile(const TCHAR* pFilePath, const TCHAR* pKey, SoundType type);
 
-	VOID LoopStart(const TCHAR* pKey);
+	void OneShotSimultaneous(const TCHAR* pKey);
 
-	VOID OneShotStart(const TCHAR* pKey);
+	void LoopStart(const TCHAR* pKey);
 
-	VOID Pause(const TCHAR* pKey);
+	void OneShotStart(const TCHAR* pKey);
 
-	VOID Resume(const TCHAR* pKey);
+	void Pause(const TCHAR* pKey);
 
-	VOID Stop(const TCHAR* pKey);
+	void Resume(const TCHAR* pKey);
 
-	VOID SetVolume(const TCHAR* pKey, INT vol);
+	void Stop(const TCHAR* pKey);
+
+	void Stop(SoundType type);
+
+	void SetVolume(const TCHAR * pKey, int vol);
+
+	void SetVolume(int vol, SoundType type = ALL_TYPE);
 
 private:
+	
+	Sound(Sound& sound) = delete;
+
+	Sound& operator=(Sound& sound) = delete;
+
 	struct SimultaneousKeys
 	{
 	public:
-		static const INT m_SIMULTANEOUS_NUM_MAX = 10;
-		TCHAR* m_pKeys[m_SIMULTANEOUS_NUM_MAX];
-		INT m_currentPlayNum = 0;
+		static const int SIMULTANEOUS_NUM_MAX = 10;
+		TCHAR* m_pKeys[SIMULTANEOUS_NUM_MAX];
+		int m_currentPlayNum = 0;
 	};
 
 	SoundLib::SoundsManager m_soundsManager;
@@ -49,6 +72,15 @@ private:
 	const TCHAR m_TEXT_END = _T('\0');
 
 	std::map<const TCHAR*, SimultaneousKeys> m_simultaneousKeys;
+
+	std::vector<SoundKey> m_SoundKey;
+
+	SoundKey m_SoundKeyBuff;
+
+	SoundType GetSoundType(int arrayNum) {
+		return m_SoundKey[arrayNum].Type;
+	}
+
 };
 
 //
