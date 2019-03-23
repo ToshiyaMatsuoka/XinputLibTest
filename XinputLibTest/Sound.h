@@ -47,7 +47,7 @@ public:
 
 	void Stop(const TCHAR* pKey);
 
-	void Stop(SoundType type);
+	void Stop(SoundType type = ALL_TYPE);
 
 	void SetVolume(const TCHAR * pKey, int vol);
 
@@ -74,8 +74,6 @@ private:
 	std::map<const TCHAR*, SimultaneousKeys> m_simultaneousKeys;
 
 	std::vector<SoundKey> m_SoundKey;
-
-	SoundKey m_SoundKeyBuff;
 
 	SoundType GetSoundType(int arrayNum) {
 		return m_SoundKey[arrayNum].Type;
