@@ -41,8 +41,8 @@ void Sound::AddFile(const TCHAR * pFilePath, const TCHAR * pKey, SoundType type)
 //　一気に10個分の音声オブジェクトの生成する
 void Sound::AddSimultaneousFile(const TCHAR * pFilePath, const TCHAR * pKey, SoundType type)
 {
-	size_t tCharLength = _tcsclen(pKey);
-	size_t additionalKeyLength = tCharLength + 3;	//! 数字と\0の数足す
+	size_t keyLength = _tcsclen(pKey);
+	size_t additionalKeyLength = keyLength + 3;	//! 数字と\0の数足す
 	bool successAddFile = false;
 
 	for (int i = 0; i < SimultaneousKeys::SIMULTANEOUS_NUM_MAX; ++i)
@@ -52,12 +52,12 @@ void Sound::AddSimultaneousFile(const TCHAR * pFilePath, const TCHAR * pKey, Sou
 		_tcscpy_s(m_simultaneousKeys[pKey].m_pKeys[i], additionalKeyLength, pKey);
 
 		
-		int hh = (1 + (i / SimultaneousKeys::SIMULTANEOUS_NUM_MAX));//意味わからんので誰か教えて
-		_itot_s(i, &m_simultaneousKeys[pKey].m_pKeys[i][tCharLength], sizeof(TCHAR) * hh, 10);
+		//int hh = (1 + (i / SimultaneousKeys::SIMULTANEOUS_NUM_MAX));
+		_itot_s(i, &m_simultaneousKeys[pKey].m_pKeys[i][keyLength], sizeof(TCHAR), 10);
 
 		
-		int buf = tCharLength + 1 + (i / SimultaneousKeys::SIMULTANEOUS_NUM_MAX);
-		m_simultaneousKeys[pKey].m_pKeys[i][buf] = m_TEXT_END;
+		size_t simultaneousKeyLength = keyLength + 1/* + (i / SimultaneousKeys::SIMULTANEOUS_NUM_MAX)*/;
+		m_simultaneousKeys[pKey].m_pKeys[i][simultaneousKeyLength] = m_TEXT_END;
 
 		successAddFile = m_soundsManager.AddFile(pFilePath, m_simultaneousKeys[pKey].m_pKeys[i]);
 		if (successAddFile) {
