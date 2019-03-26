@@ -51,13 +51,18 @@ void Sound::AddSimultaneousFile(const TCHAR * pFilePath, const TCHAR * pKey, Sou
 
 		_tcscpy_s(m_simultaneousKeys[pKey].m_pKeys[i], additionalKeyLength, pKey);
 
-		_itot_s(i, &m_simultaneousKeys[pKey].m_pKeys[i][tCharLength], sizeof(TCHAR) * (1 + (i / SimultaneousKeys::SIMULTANEOUS_NUM_MAX)), 10);
-		m_simultaneousKeys[pKey].m_pKeys[i][tCharLength + 1 + (i / SimultaneousKeys::SIMULTANEOUS_NUM_MAX)] = m_TEXT_END;
+		
+		int hh = (1 + (i / SimultaneousKeys::SIMULTANEOUS_NUM_MAX));//意味わからんので誰か教えて
+		_itot_s(i, &m_simultaneousKeys[pKey].m_pKeys[i][tCharLength], sizeof(TCHAR) * hh, 10);
 
-		successAddFile = m_soundsManager.AddFile(pFilePath, &m_simultaneousKeys[pKey].m_pKeys[i][0]);
+		
+		int buf = tCharLength + 1 + (i / SimultaneousKeys::SIMULTANEOUS_NUM_MAX);
+		m_simultaneousKeys[pKey].m_pKeys[i][buf] = m_TEXT_END;
+
+		successAddFile = m_soundsManager.AddFile(pFilePath, m_simultaneousKeys[pKey].m_pKeys[i]);
 		if (successAddFile) {
 			SoundKey soundKey;
-			soundKey.Key = &m_simultaneousKeys[pKey].m_pKeys[i][0];
+			soundKey.Key = m_simultaneousKeys[pKey].m_pKeys[i];
 			soundKey.Type = type;
 			m_SoundKey.emplace_back(soundKey);
 		}
@@ -73,9 +78,9 @@ void Sound::OneShotSimultaneous(const TCHAR * pKey)
 
 	if (prevPrevNum < 0) prevPrevNum = SimultaneousKeys::SIMULTANEOUS_NUM_MAX + prevPrevNum;
 
-	Stop(&m_simultaneousKeys[pKey].m_pKeys[prevPrevNum][0]);
+	Stop(m_simultaneousKeys[pKey].m_pKeys[prevPrevNum]);
 
-	OneShotStart(&m_simultaneousKeys[pKey].m_pKeys[currentNum][0]);
+	OneShotStart(m_simultaneousKeys[pKey].m_pKeys[currentNum]);
 
 	m_simultaneousKeys[pKey].m_currentPlayNum = (currentNum >= (SimultaneousKeys::SIMULTANEOUS_NUM_MAX - 1)) ? 0 : ++currentNum;
 }
