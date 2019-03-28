@@ -63,19 +63,19 @@ void TestScene::Initialize(DirectX* pDirectX)
 void TestScene::Update()
 {
 	m_pXinputManager->DeviceUpdate();
-	if (Xinput::PadOn == m_pXinputManager->GetThumbLState(Xinput::ANALOGRIGHT))
+	if (Xinput::PadOn == m_pXinputManager->GetLeftThumbState(Xinput::THUMB_RIGHT))
 	{
 		m_Central.x+=20;
 	}
-	if (Xinput::PadOn == m_pXinputManager->GetThumbLState(Xinput::ANALOGLEFT))
+	if (Xinput::PadOn == m_pXinputManager->GetLeftThumbState(Xinput::THUMB_LEFT))
 	{
 		m_Central.x-=20;
 	}
-	if (Xinput::PadOn == m_pXinputManager->GetThumbLState(Xinput::ANALOGDOWN))
+	if (Xinput::PadOn == m_pXinputManager->GetLeftThumbState(Xinput::THUMB_DOWN))
 	{
 		m_Central.y+= 20;
 	}
-	if (Xinput::PadOn == m_pXinputManager->GetThumbLState(Xinput::ANALOGUP))
+	if (Xinput::PadOn == m_pXinputManager->GetLeftThumbState(Xinput::THUMB_UP))
 	{
 		m_Central.y-= 20;
 	}

@@ -7,12 +7,12 @@
 using namespace Xinput;
 
 
-XinputManager::XinputManager(unsigned int thumbLDeadzone, unsigned int thumbRDeadzone, unsigned int triggerLDeadzone, unsigned int triggerRDeadzone)
+XinputManager::XinputManager(unsigned int leftThumbDeadzone, unsigned int rightThumbDeadzone, unsigned int leftTriggerDeadzone, unsigned int rightTriggerDeadzone)
 {
-	m_pXinputDevices[PLAYER_01] = new XinputDevice(PLAYER_01,thumbLDeadzone,thumbRDeadzone,triggerLDeadzone,triggerRDeadzone);
-	m_pXinputDevices[PLAYER_02] = new XinputDevice(PLAYER_02,thumbLDeadzone,thumbRDeadzone,triggerLDeadzone,triggerRDeadzone);
-	m_pXinputDevices[PLAYER_03] = new XinputDevice(PLAYER_03,thumbLDeadzone,thumbRDeadzone,triggerLDeadzone,triggerRDeadzone);
-	m_pXinputDevices[PLAYER_04] = new XinputDevice(PLAYER_04,thumbLDeadzone,thumbRDeadzone,triggerLDeadzone,triggerRDeadzone);
+	m_pXinputDevices[PLAYER_01] = new XinputDevice(PLAYER_01,leftThumbDeadzone,rightThumbDeadzone,leftTriggerDeadzone,rightTriggerDeadzone);
+	m_pXinputDevices[PLAYER_02] = new XinputDevice(PLAYER_02,leftThumbDeadzone,rightThumbDeadzone,leftTriggerDeadzone,rightTriggerDeadzone);
+	m_pXinputDevices[PLAYER_03] = new XinputDevice(PLAYER_03,leftThumbDeadzone,rightThumbDeadzone,leftTriggerDeadzone,rightTriggerDeadzone);
+	m_pXinputDevices[PLAYER_04] = new XinputDevice(PLAYER_04,leftThumbDeadzone,rightThumbDeadzone,leftTriggerDeadzone,rightTriggerDeadzone);
 }
 
 
@@ -61,58 +61,58 @@ bool XinputManager::PressedAnyButton(PLAYER_NUM num) {
 	return false;
 }
 
-int XinputManager::GetTriggerValue(AnalogTrigger trigger, PLAYER_NUM num)
+int XinputManager::GetTriggerValue(Trigger trigger, PLAYER_NUM num)
 {
 	if (ERROR_SUCCESS != m_pXinputDevices[num]->GetInfo()) return 0;
 	return m_pXinputDevices[num]->GetTriggerValue(trigger);
 }
 
-bool XinputManager::GetThumbL(Analog analogState, PLAYER_NUM num)
+bool XinputManager::TiltedLeftThumb(ThumbTilt thumbTilt, PLAYER_NUM num)
 {
 	if (ERROR_SUCCESS != m_pXinputDevices[num]->GetInfo()) return 0;
-	return m_pXinputDevices[num]->GetThumbL(analogState);
+	return m_pXinputDevices[num]->TiltedLeftThumb(thumbTilt);
 }
 
-bool XinputManager::GetThumbR(Analog analogState, PLAYER_NUM num)
+bool XinputManager::TiltedRightThumb(ThumbTilt thumbTilt, PLAYER_NUM num)
 {
 	if (ERROR_SUCCESS != m_pXinputDevices[num]->GetInfo()) return 0;
-	return m_pXinputDevices[num]->GetThumbR(analogState);
+	return m_pXinputDevices[num]->TiltedRightThumb(thumbTilt);
 }
 
-int XinputManager::GetThumbLValue(AnalogAxis analogState, PLAYER_NUM num)
+int XinputManager::GetLeftThumbValue(ThumbTiltAxis thumbTilt, PLAYER_NUM num)
 {
 	if (ERROR_SUCCESS != m_pXinputDevices[num]->GetInfo()) return 0;
-	return m_pXinputDevices[num]->GetThumbLValue(analogState);
+	return m_pXinputDevices[num]->GetLeftThumbValue(thumbTilt);
 }
 
-int XinputManager::GetThumbRValue(AnalogAxis analogState, PLAYER_NUM num)
+int XinputManager::GetRightThumbValue(ThumbTiltAxis thumbTilt, PLAYER_NUM num)
 {
 	if (ERROR_SUCCESS != m_pXinputDevices[num]->GetInfo()) return 0;
-	return m_pXinputDevices[num]->GetThumbRValue(analogState);
+	return m_pXinputDevices[num]->GetRightThumbValue(thumbTilt);
 }
 
-PADSTATE XinputManager::GetThumbLState(Analog analogState, PLAYER_NUM num)
+PADSTATE XinputManager::GetLeftThumbState(ThumbTilt thumbTilt, PLAYER_NUM num)
 {
 	if (ERROR_SUCCESS != m_pXinputDevices[num]->GetInfo()) return PadOff;
-	return m_pXinputDevices[num]->GetThumbLState(analogState);
+	return m_pXinputDevices[num]->GetLeftThumbState(thumbTilt);
 }
 
-PADSTATE XinputManager::GetThumbRState(Analog analogState, PLAYER_NUM num)
+PADSTATE XinputManager::GetRightThumbState(ThumbTilt thumbTilt, PLAYER_NUM num)
 {
 	if (ERROR_SUCCESS != m_pXinputDevices[num]->GetInfo()) return PadOff;
-	return m_pXinputDevices[num]->GetThumbRState(analogState);
+	return m_pXinputDevices[num]->GetRightThumbState(thumbTilt);
 }
 
-PADSTATE XinputManager::GetTriggerRState(PLAYER_NUM num)
+PADSTATE XinputManager::GetRightTriggerState(PLAYER_NUM num)
 {
 	if (ERROR_SUCCESS != m_pXinputDevices[num]->GetInfo()) return PadOff;
-	return m_pXinputDevices[num]->GetTriggerRState();
+	return m_pXinputDevices[num]->GetRightTriggerState();
 }
 
-PADSTATE XinputManager::GetTriggerLState(PLAYER_NUM num)
+PADSTATE XinputManager::GetLeftTriggerState(PLAYER_NUM num)
 {
 	if (ERROR_SUCCESS != m_pXinputDevices[num]->GetInfo()) return PadOff;
-	return m_pXinputDevices[num]->GetTriggerLState();
+	return m_pXinputDevices[num]->GetLeftTriggerState();
 }
 
 void XinputManager::RunVibration(PLAYER_NUM num, unsigned int leftValue, unsigned int rightValue)
@@ -152,7 +152,7 @@ bool XinputManager::PressedAnyButton() {
 	return false;
 }
 
-int XinputManager::GetTriggerValue(AnalogTrigger trigger)
+int XinputManager::GetTriggerValue(Trigger trigger)
 {
 	for (auto& XinputDevice : m_pXinputDevices) {
 		if (ERROR_SUCCESS != XinputDevice->GetInfo()) continue;
@@ -164,96 +164,96 @@ int XinputManager::GetTriggerValue(AnalogTrigger trigger)
 	return 0;
 }
 
-bool XinputManager::GetThumbL(Analog analogState)
+bool XinputManager::TiltedLeftThumb(ThumbTilt thumbTilt)
 {
 	for (auto& XinputDevice : m_pXinputDevices) {
 		if (ERROR_SUCCESS != XinputDevice->GetInfo()) continue;
 		bool isTilted = false;
-		isTilted = XinputDevice->GetThumbL(analogState);
+		isTilted = XinputDevice->TiltedLeftThumb(thumbTilt);
 		if (isTilted == 0) continue;
 		return isTilted;
 	}
 	return false;
 }
 
-bool XinputManager::GetThumbR(Analog analogState)
+bool XinputManager::TiltedRightThumb(ThumbTilt thumbTilt)
 {
 	for (auto& XinputDevice : m_pXinputDevices) {
 		if (ERROR_SUCCESS != XinputDevice->GetInfo()) continue;
 		bool isTilted = false;
-		isTilted = XinputDevice->GetThumbR(analogState);
+		isTilted = XinputDevice->TiltedRightThumb(thumbTilt);
 		if (isTilted == 0) continue;
 		return isTilted;
 	}
 	return false;
 }
 
-int XinputManager::GetThumbLValue(AnalogAxis analogState)
+int XinputManager::GetLeftThumbValue(ThumbTiltAxis thumbTilt)
 {
 	for (auto& XinputDevice : m_pXinputDevices) {
 		if (ERROR_SUCCESS != XinputDevice->GetInfo()) continue;
 		int AnalogValue;
-		AnalogValue= XinputDevice->GetThumbLValue(analogState);
+		AnalogValue= XinputDevice->GetLeftThumbValue(thumbTilt);
 		if (AnalogValue == 0) continue;
 		return AnalogValue;
 	}
 	return 0;
 }
 
-int XinputManager::GetThumbRValue(AnalogAxis analogState)
+int XinputManager::GetRightThumbValue(ThumbTiltAxis thumbTilt)
 {
 	for (auto& XinputDevice : m_pXinputDevices) {
 		if (ERROR_SUCCESS != XinputDevice->GetInfo()) continue;
 		int AnalogValue;
-		AnalogValue = XinputDevice->GetThumbRValue(analogState);
+		AnalogValue = XinputDevice->GetRightThumbValue(thumbTilt);
 		if (AnalogValue == 0) continue;
 		return AnalogValue;
 	}
 	return 0;
 }
 
-PADSTATE XinputManager::GetThumbLState(Analog analogState)
+PADSTATE XinputManager::GetLeftThumbState(ThumbTilt thumbTilt)
 {
 	for (auto& XinputDevice : m_pXinputDevices) {
 		if (ERROR_SUCCESS != XinputDevice->GetInfo()) continue;
 		PADSTATE padState = PadOff;
-		padState = XinputDevice->GetThumbLState(analogState);
+		padState = XinputDevice->GetLeftThumbState(thumbTilt);
 		if (padState == PadOff) continue;
 		return padState;
 	}
 	return PadOff;
 }
 
-PADSTATE XinputManager::GetThumbRState(Analog analogState)
+PADSTATE XinputManager::GetRightThumbState(ThumbTilt thumbTilt)
 {
 	for (auto& XinputDevice : m_pXinputDevices) {
 		if (ERROR_SUCCESS != XinputDevice->GetInfo()) continue;
 		PADSTATE padState = PadOff;
-		padState = XinputDevice->GetThumbRState(analogState);
+		padState = XinputDevice->GetRightThumbState(thumbTilt);
 		if (padState == PadOff) continue;
 		return padState;
 	}
 	return PadOff;
 }
 
-PADSTATE XinputManager::GetTriggerRState()
+PADSTATE XinputManager::GetRightTriggerState()
 {
 	for (auto& XinputDevice : m_pXinputDevices) {
 		if (ERROR_SUCCESS != XinputDevice->GetInfo()) continue;
 		PADSTATE padState = PadOff;
-		padState = XinputDevice->GetTriggerRState();
+		padState = XinputDevice->GetRightTriggerState();
 		if (padState == PadOff) continue;
 		return padState;
 	}
 	return PadOff;
 }
 
-PADSTATE XinputManager::GetTriggerLState()
+PADSTATE XinputManager::GetLeftTriggerState()
 {
 	for (auto& XinputDevice : m_pXinputDevices) {
 		if (ERROR_SUCCESS != XinputDevice->GetInfo()) continue;
 		PADSTATE padState = PadOff;
-		padState = XinputDevice->GetTriggerRState();
+		padState = XinputDevice->GetRightTriggerState();
 		if (padState == PadOff) continue;
 		return padState;
 	}

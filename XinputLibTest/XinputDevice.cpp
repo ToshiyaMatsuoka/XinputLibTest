@@ -8,16 +8,16 @@
 using namespace Xinput;
 
 
-XinputDevice::XinputDevice(PLAYER_NUM number,int thumbLDeadzone,int thumbRDeadzone,int triggerLDeadzone,int triggerRDeadzone)
+XinputDevice::XinputDevice(PLAYER_NUM number,int leftThumbDeadzone,int rightThumbDeadzone,int leftTriggerDeadzone,int rightTriggerDeadzone)
 	:CONTROLER_NUM(number)
 { 
-	SetAnalogLeftThumbDeadzone(thumbLDeadzone);
+	SetLeftThumbDeadzone(leftThumbDeadzone);
 
-	SetAnalogRightThumbDeadzone(thumbRDeadzone);
+	SetRightThumbDeadzone(rightThumbDeadzone);
 
-	SetAnalogLeftTriggerDeadzone(triggerLDeadzone);
+	SetLeftTriggerDeadzone(leftTriggerDeadzone);
 
-	SetAnalogRightTriggerDeadzone(triggerRDeadzone);
+	SetRightTriggerDeadzone(rightTriggerDeadzone);
 }
 
 XinputDevice::~XinputDevice()
@@ -30,25 +30,25 @@ void XinputDevice::GetControl()
 	XINPUT_INFO = XInputGetState(CONTROLER_NUM, &m_Xinput);
 }
 
-void XinputDevice::SetAnalogLeftThumbDeadzone(unsigned int thumbLDeadzone)
+void XinputDevice::SetLeftThumbDeadzone(unsigned int leftThumbDeadzone)
 {
-	if (thumbLDeadzone > MAX_THUMB_VALUE) thumbLDeadzone = MAX_THUMB_VALUE;
-	m_AnalogLeftThumbDeadzone = thumbLDeadzone;
+	if (leftThumbDeadzone > MAX_THUMB_VALUE) leftThumbDeadzone = MAX_THUMB_VALUE;
+	m_LeftThumbDeadzone = leftThumbDeadzone;
 }
-void XinputDevice::SetAnalogRightThumbDeadzone(unsigned int thumbRDeadzone)
+void XinputDevice::SetRightThumbDeadzone(unsigned int rightThumbDeadzone)
 {
-	if (thumbRDeadzone > MAX_THUMB_VALUE) thumbRDeadzone = MAX_THUMB_VALUE;
-	m_AnalogRightThumbDeadzone = thumbRDeadzone;
+	if (rightThumbDeadzone > MAX_THUMB_VALUE) rightThumbDeadzone = MAX_THUMB_VALUE;
+	m_RightThumbDeadzone = rightThumbDeadzone;
 }
-void XinputDevice::SetAnalogLeftTriggerDeadzone(unsigned int triggerLDeadzone)
+void XinputDevice::SetLeftTriggerDeadzone(unsigned int leftTriggerDeadzone)
 {
-	if (triggerLDeadzone > MAX_TRIGGER_VALUE) triggerLDeadzone = MAX_TRIGGER_VALUE;
-	m_AnalogLeftTriggerDeadzone = triggerLDeadzone;
+	if (leftTriggerDeadzone > MAX_TRIGGER_VALUE) leftTriggerDeadzone = MAX_TRIGGER_VALUE;
+	m_LeftTriggerDeadzone = leftTriggerDeadzone;
 }
-void XinputDevice::SetAnalogRightTriggerDeadzone(unsigned int triggerRDeadzone)
+void XinputDevice::SetRightTriggerDeadzone(unsigned int rightTriggerDeadzone)
 {
-	if (triggerRDeadzone > MAX_TRIGGER_VALUE) triggerRDeadzone = MAX_TRIGGER_VALUE;
-	m_AnalogRightTriggerDeadzone = triggerRDeadzone;
+	if (rightTriggerDeadzone > MAX_TRIGGER_VALUE) rightTriggerDeadzone = MAX_TRIGGER_VALUE;
+	m_RightTriggerDeadzone = rightTriggerDeadzone;
 }
 
 PADSTATE XinputDevice::GetButton(ButtonIndex index)const
@@ -65,7 +65,7 @@ bool XinputDevice::PressedAnyButton()const
 	}
 	return false;
 }
-void XinputDevice::BottonCheck() {
+void XinputDevice::ButtonCheck() {
 
 	CheckButtonState(XINPUT_GAMEPAD_A, ButtonA);
 	CheckButtonState(XINPUT_GAMEPAD_B, ButtonB);
@@ -82,14 +82,14 @@ void XinputDevice::BottonCheck() {
 	CheckButtonState(XINPUT_GAMEPAD_LEFT_THUMB, ButtonLeftThumb);
 	CheckButtonState(XINPUT_GAMEPAD_RIGHT_THUMB, ButtonRightThumb);
 
-	AnalogLStateDivide(ANALOGUP);
-	AnalogRStateDivide(ANALOGUP);
-	AnalogLStateDivide(ANALOGDOWN);
-	AnalogRStateDivide(ANALOGDOWN);
-	AnalogLStateDivide(ANALOGLEFT);
-	AnalogRStateDivide(ANALOGLEFT);
-	AnalogLStateDivide(ANALOGRIGHT);
-	AnalogRStateDivide(ANALOGRIGHT);
+	LeftThumbStateDivide(THUMB_UP);
+	RightThumbStateDivide(THUMB_UP);
+	LeftThumbStateDivide(THUMB_DOWN);
+	RightThumbStateDivide(THUMB_DOWN);
+	LeftThumbStateDivide(THUMB_LEFT);
+	RightThumbStateDivide(THUMB_LEFT);
+	LeftThumbStateDivide(THUMB_RIGHT);
+	RightThumbStateDivide(THUMB_RIGHT);
 
 	TriggerRStateDivide();
 	TriggerLStateDivide();
@@ -98,7 +98,7 @@ void XinputDevice::BottonCheck() {
 void XinputDevice::DeviceUpdate() {
 
 	GetControl();
-	BottonCheck();
+	ButtonCheck();
 }
 
 void XinputDevice::CheckButtonState(WORD buttomID, ButtonIndex buttomIndex)
@@ -130,19 +130,19 @@ void XinputDevice::CheckButtonState(WORD buttomID, ButtonIndex buttomIndex)
 	}
 }
 
-int XinputDevice::GetTriggerValue(AnalogTrigger trigger)const
+int XinputDevice::GetTriggerValue(Trigger trigger)const
 {
 	switch (trigger)
 	{
 	case LEFT_TRIGGER:
-		if (m_Xinput.Gamepad.bLeftTrigger < m_AnalogLeftTriggerDeadzone &&
-			m_Xinput.Gamepad.bLeftTrigger > -m_AnalogLeftTriggerDeadzone) {
+		if (m_Xinput.Gamepad.bLeftTrigger < m_LeftTriggerDeadzone &&
+			m_Xinput.Gamepad.bLeftTrigger > -m_LeftTriggerDeadzone) {
 			return 0;
 		}
 		return m_Xinput.Gamepad.bLeftTrigger;
 	case RIGHT_TRIGGER:
-		if (m_Xinput.Gamepad.bRightTrigger < m_AnalogRightTriggerDeadzone &&
-			m_Xinput.Gamepad.bRightTrigger > -m_AnalogRightTriggerDeadzone) {
+		if (m_Xinput.Gamepad.bRightTrigger < m_RightTriggerDeadzone &&
+			m_Xinput.Gamepad.bRightTrigger > -m_RightTriggerDeadzone) {
 			return 0;
 		}
 		return m_Xinput.Gamepad.bRightTrigger;
@@ -150,30 +150,30 @@ int XinputDevice::GetTriggerValue(AnalogTrigger trigger)const
 	return 0;
 }
 
-bool XinputDevice::GetThumbL(Analog analogState)const
+bool XinputDevice::TiltedLeftThumb(ThumbTilt thumbTilt)const
 {
-	switch (analogState)
+	switch (thumbTilt)
 	{
-	case ANALOGUP:
-		if (GetThumbLValue(ANALOG_Y) > INCLINATION_THRESHOLD_VALUE)
+	case THUMB_UP:
+		if (GetLeftThumbValue(THUMB_Y) > INCLINATION_THRESHOLD_VALUE)
 		{
 			return true;
 		}
 		break;
-	case ANALOGDOWN:
-		if (GetThumbLValue(ANALOG_Y) < -INCLINATION_THRESHOLD_VALUE)
+	case THUMB_DOWN:
+		if (GetLeftThumbValue(THUMB_Y) < -INCLINATION_THRESHOLD_VALUE)
 		{
 			return true;
 		}
 		break;
-	case ANALOGRIGHT:
-		if (GetThumbLValue(ANALOG_X) > INCLINATION_THRESHOLD_VALUE)
+	case THUMB_RIGHT:
+		if (GetLeftThumbValue(THUMB_X) > INCLINATION_THRESHOLD_VALUE)
 		{
 			return true;
 		}
 		break;
-	case ANALOGLEFT:
-		if (GetThumbLValue(ANALOG_X) < -INCLINATION_THRESHOLD_VALUE)
+	case THUMB_LEFT:
+		if (GetLeftThumbValue(THUMB_X) < -INCLINATION_THRESHOLD_VALUE)
 		{
 			return true;
 		}
@@ -184,30 +184,30 @@ bool XinputDevice::GetThumbL(Analog analogState)const
 	return false;
 }
 
-bool XinputDevice::GetThumbR(Analog analogState)const
+bool XinputDevice::TiltedRightThumb(ThumbTilt thumbTilt)const
 {
-	switch (analogState)
+	switch (thumbTilt)
 	{
-	case ANALOGUP:
-		if (GetThumbRValue(ANALOG_Y) > INCLINATION_THRESHOLD_VALUE)
+	case THUMB_UP:
+		if (GetRightThumbValue(THUMB_Y) > INCLINATION_THRESHOLD_VALUE)
 		{
 			return true;
 		}
 		break;
-	case ANALOGDOWN:
-		if (GetThumbRValue(ANALOG_Y) < -INCLINATION_THRESHOLD_VALUE)
+	case THUMB_DOWN:
+		if (GetRightThumbValue(THUMB_Y) < -INCLINATION_THRESHOLD_VALUE)
 		{
 			return true;
 		}
 		break;
-	case ANALOGRIGHT:
-		if (GetThumbRValue(ANALOG_X) > INCLINATION_THRESHOLD_VALUE)
+	case THUMB_RIGHT:
+		if (GetRightThumbValue(THUMB_X) > INCLINATION_THRESHOLD_VALUE)
 		{
 			return true;
 		}
 		break;
-	case ANALOGLEFT:
-		if (GetThumbRValue(ANALOG_X) < -INCLINATION_THRESHOLD_VALUE)
+	case THUMB_LEFT:
+		if (GetRightThumbValue(THUMB_X) < -INCLINATION_THRESHOLD_VALUE)
 		{
 			return true;
 		}
@@ -218,20 +218,20 @@ bool XinputDevice::GetThumbR(Analog analogState)const
 	return false;
 }
 
-int XinputDevice::GetThumbLValue(AnalogAxis analogState)const
+int XinputDevice::GetLeftThumbValue(ThumbTiltAxis thumbTilt)const
 {
-	switch (analogState)
+	switch (thumbTilt)
 	{
-	case ANALOG_Y:
-		if (m_Xinput.Gamepad.sThumbLY < m_AnalogLeftThumbDeadzone &&
-			m_Xinput.Gamepad.sThumbLY > -m_AnalogLeftThumbDeadzone) {
+	case THUMB_Y:
+		if (m_Xinput.Gamepad.sThumbLY < m_LeftThumbDeadzone &&
+			m_Xinput.Gamepad.sThumbLY > -m_LeftThumbDeadzone) {
 			return 0;
 		}
 		return m_Xinput.Gamepad.sThumbLY;
 		break;
-	case ANALOG_X:
-		if (m_Xinput.Gamepad.sThumbLX < m_AnalogLeftThumbDeadzone &&
-			m_Xinput.Gamepad.sThumbLX > -m_AnalogLeftThumbDeadzone) {
+	case THUMB_X:
+		if (m_Xinput.Gamepad.sThumbLX < m_LeftThumbDeadzone &&
+			m_Xinput.Gamepad.sThumbLX > -m_LeftThumbDeadzone) {
 			return 0;
 		}
 		return m_Xinput.Gamepad.sThumbLX;
@@ -241,20 +241,20 @@ int XinputDevice::GetThumbLValue(AnalogAxis analogState)const
 	}
 }
 
-int XinputDevice::GetThumbRValue(AnalogAxis analogState)const
+int XinputDevice::GetRightThumbValue(ThumbTiltAxis thumbTilt)const
 {
-	switch (analogState)
+	switch (thumbTilt)
 	{
-	case ANALOG_Y:
-		if (m_Xinput.Gamepad.sThumbRY < m_AnalogRightThumbDeadzone &&
-			m_Xinput.Gamepad.sThumbRY > -m_AnalogRightThumbDeadzone) {
+	case THUMB_Y:
+		if (m_Xinput.Gamepad.sThumbRY < m_RightThumbDeadzone &&
+			m_Xinput.Gamepad.sThumbRY > -m_RightThumbDeadzone) {
 			return 0;
 		}
 		return m_Xinput.Gamepad.sThumbRY;
 		break;
-	case ANALOG_X:
-		if (m_Xinput.Gamepad.sThumbRX < m_AnalogRightThumbDeadzone &&
-			m_Xinput.Gamepad.sThumbRX > -m_AnalogRightThumbDeadzone) {
+	case THUMB_X:
+		if (m_Xinput.Gamepad.sThumbRX < m_RightThumbDeadzone &&
+			m_Xinput.Gamepad.sThumbRX > -m_RightThumbDeadzone) {
 			return 0;
 		}
 		return m_Xinput.Gamepad.sThumbRX;
@@ -264,130 +264,131 @@ int XinputDevice::GetThumbRValue(AnalogAxis analogState)const
 	}
 }
 
-PADSTATE XinputDevice::GetThumbLState(Analog analogState)const
+PADSTATE XinputDevice::GetLeftThumbState(ThumbTilt thumbTilt)const
 {
-	return m_AnalogLState[analogState];
+	return m_LeftThumbState[thumbTilt];
 }
 
-PADSTATE XinputDevice::GetThumbRState(Analog analogState)const
+PADSTATE XinputDevice::GetRightThumbState(ThumbTilt thumbTilt)const
 {
-	return m_AnalogRState[analogState];
+	return m_RightThumbState[thumbTilt];
 }
 
-PADSTATE XinputDevice::GetTriggerRState()const
+PADSTATE XinputDevice::GetRightTriggerState()const
 {
-	return m_TriggerRState;
+	return m_RightTriggerState;
 }
 
-PADSTATE XinputDevice::GetTriggerLState()const
+PADSTATE XinputDevice::GetLeftTriggerState()const
 {
-	return m_TriggerLState;
+	return m_LeftTriggerState;
 }
 
-void XinputDevice::AnalogRStateDivide(Analog analogState) {
-	if (GetThumbR(analogState))
+void XinputDevice::RightThumbStateDivide(ThumbTilt thumbTilt) {
+	if (TiltedRightThumb(thumbTilt))
 	{
-		if (m_AnalogROldState[analogState] == PadOn)
+		if (m_RightThumbOldState[thumbTilt] == PadOn)
 		{
-			m_AnalogRState[analogState] = PadOn;
+			m_RightThumbState[thumbTilt] = PadOn;
 		}
 		else
 		{
-			m_AnalogRState[analogState] = PadPush;
+			m_RightThumbState[thumbTilt] = PadPush;
 		}
-		m_AnalogROldState[analogState] = PadOn;
+		m_RightThumbOldState[thumbTilt] = PadOn;
 	}
 	else
 	{
-		if (m_AnalogROldState[analogState] == PadOn)
+		if (m_RightThumbOldState[thumbTilt] == PadOn)
 		{
-			m_AnalogRState[analogState] = PadRelease;
+			m_RightThumbState[thumbTilt] = PadRelease;
 		}
 		else
 		{
-			m_AnalogRState[analogState] = PadOff;
+			m_RightThumbState[thumbTilt] = PadOff;
 		}
-		m_AnalogROldState[analogState] = PadOff;
+		m_RightThumbOldState[thumbTilt] = PadOff;
 	}
 }
 
-void XinputDevice::AnalogLStateDivide(Analog analogState) {
-	if (GetThumbL(analogState))
+void XinputDevice::LeftThumbStateDivide(ThumbTilt thumbTilt) {
+	if (TiltedLeftThumb(thumbTilt))
 	{
-		if (m_AnalogLOldState[analogState] == PadOn)
+		if (m_LeftThumbOldState[thumbTilt] == PadOn)
 		{
-			m_AnalogLState[analogState] = PadOn;
+			m_LeftThumbState[thumbTilt] = PadOn;
 		}
 		else
 		{
-			m_AnalogLState[analogState] = PadPush;
+			m_LeftThumbState[thumbTilt] = PadPush;
 		}
-		m_AnalogLOldState[analogState] = PadOn;
+		m_LeftThumbOldState[thumbTilt] = PadOn;
 	}
 	else
 	{
-		if (m_AnalogLOldState[analogState] == PadOn)
+		if (m_LeftThumbOldState[thumbTilt] == PadOn)
 		{
-			m_AnalogLState[analogState] = PadRelease;
+			m_LeftThumbState[thumbTilt] = PadRelease;
 		}
 		else
 		{
-			m_AnalogLState[analogState] = PadOff;
+			m_LeftThumbState[thumbTilt] = PadOff;
 		}
-		m_AnalogLOldState[analogState] = PadOff;
+		m_LeftThumbOldState[thumbTilt] = PadOff;
 	}
 }
 
 void XinputDevice::TriggerRStateDivide() {
 	if (GetTriggerValue(RIGHT_TRIGGER))
 	{
-		if (m_TriggerROldState == PadOn)
+		if (m_RightTriggerOldState == PadOn)
 		{
-			m_TriggerRState = PadOn;
+			m_RightTriggerState = PadOn;
 		}
 		else
 		{
-			m_TriggerRState = PadPush;
+			m_RightTriggerState = PadPush;
 		}
-		m_TriggerROldState = PadOn;
+		m_RightTriggerOldState = PadOn;
 	}
 	else
 	{
-		if (m_TriggerROldState == PadOn)
+		if (m_RightTriggerOldState == PadOn)
 		{
-			m_TriggerRState = PadRelease;
+			m_RightTriggerState = PadRelease;
 		}
 		else
 		{
-			m_TriggerRState = PadOff;
+			m_RightTriggerState = PadOff;
 		}
-		m_TriggerROldState = PadOff;
+		m_RightTriggerOldState = PadOff;
 	}
 }
+
 void XinputDevice::TriggerLStateDivide() {
 	if (GetTriggerValue(LEFT_TRIGGER))
 	{
-		if (m_TriggerLOldState == PadOn)
+		if (m_LeftTriggerOldState == PadOn)
 		{
-			m_TriggerLState = PadOn;
+			m_LeftTriggerState = PadOn;
 		}
 		else
 		{
-			m_TriggerLState = PadPush;
+			m_LeftTriggerState = PadPush;
 		}
-		m_TriggerLOldState = PadOn;
+		m_LeftTriggerOldState = PadOn;
 	}
 	else
 	{
-		if (m_TriggerLOldState == PadOn)
+		if (m_LeftTriggerOldState == PadOn)
 		{
-			m_TriggerLState = PadRelease;
+			m_LeftTriggerState = PadRelease;
 		}
 		else
 		{
-			m_TriggerLState = PadOff;
+			m_LeftTriggerState = PadOff;
 		}
-		m_TriggerLOldState = PadOff;
+		m_LeftTriggerOldState = PadOff;
 	}
 }
 

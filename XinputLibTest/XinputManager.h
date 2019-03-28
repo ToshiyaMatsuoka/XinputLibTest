@@ -14,11 +14,11 @@ class XinputManager
 {
 public:
 
-	/// <param name="thumbLDeadzone">0-32767の範囲を取る指定の左スティックデッドゾーン値</param>
-	/// <param name="thumbRDeadzone">0-32767の範囲を取る指定の右スティックデッドゾーン値</param>
-	/// <param name="triggerLDeadzone">0-255の範囲を取る指定の左トリガーデッドゾーン値</param>
-	/// <param name="triggerRDeadzone">0-255の範囲を取る指定の右トリガーデッドゾーン値</param>
-	XinputManager(unsigned int thumbLDeadzone = 0, unsigned int thumbRDeadzone = 0, unsigned int triggerLDeadzone = 0, unsigned int triggerRDeadzone = 0);
+	/// <param name="leftThumbDeadzone">0-32767の範囲を取る指定の左スティックデッドゾーン値</param>
+	/// <param name="rightThumbDeadzone">0-32767の範囲を取る指定の右スティックデッドゾーン値</param>
+	/// <param name="leftTriggerDeadzone">0-255の範囲を取る指定の左トリガーデッドゾーン値</param>
+	/// <param name="rightTriggerDeadzone">0-255の範囲を取る指定の右トリガーデッドゾーン値</param>
+	XinputManager(unsigned int leftThumbDeadzone = 0, unsigned int rightThumbDeadzone = 0, unsigned int leftTriggerDeadzone = 0, unsigned int rightTriggerDeadzone = 0);
 
 	~XinputManager();
 
@@ -26,7 +26,7 @@ public:
 	/// PADの接続、入力状態の確認
 	/// </summary>
 	/// <seealso cref="GetControl"/>
-	/// <seealso cref="BottonCheck"/>
+	/// <seealso cref="ButtonCheck"/>
 	void DeviceUpdate();
 	
 	/// <summary>
@@ -50,73 +50,73 @@ public:
 	/// </summary>
 	/// <param name="num">コントローラ番号</param>
 	/// <returns>いずれかのボタンが押下されてればtrue</returns>
-	/// <seealso cref="Xinput::PADSTATE"/>
+	/// <seealso cref="Xinput::PLAYER_NUM"/>
 	bool PressedAnyButton(Xinput::PLAYER_NUM num);
 
 	/// <summary>
 	/// XinputDeviceでゲームパッドのトリガーの入力取得
 	/// </summary>
-	/// <param name="Trigger">トリガーの左右認識番号</param>
+	/// <param name="trigger">トリガーの左右認識番号</param>
 	/// <param name="num">コントローラ番号</param>
 	/// <returns>0～255の値、押してなければ0</returns>
-	/// <seealso cref="Xinput::AnalogTrigger"/>
-	int GetTriggerValue(Xinput::AnalogTrigger Trigger, Xinput::PLAYER_NUM num);
+	/// <seealso cref="Xinput::trigger"/>
+	int GetTriggerValue(Xinput::Trigger trigger, Xinput::PLAYER_NUM num);
 
 	/// <summary>
 	/// XinputDeviceでゲームパッドの左アナログスティック入力取得
 	/// </summary>
-	/// <param name="analogState">スティックの方向け先番号</param>
+	/// <param name="thumbTilt">スティックの方向け先番号</param>
 	/// <param name="num">コントローラ番号</param>
 	/// <returns>傾いていればTrue、そうでなければFalse</returns>
-	/// <seealso cref="Xinput::Analog"/>
-	bool GetThumbL(Xinput::Analog analogState, Xinput::PLAYER_NUM num);
+	/// <seealso cref="Xinput::ThumbTilt"/>
+	bool TiltedLeftThumb(Xinput::ThumbTilt thumbTilt, Xinput::PLAYER_NUM num);
 
 	/// <summary>
 	/// XinputDeviceでゲームパッドの右アナログスティック入力取得
 	/// </summary>
-	/// <param name="analogState">スティックの方向け先番号</param>
+	/// <param name="thumbTilt">スティックの方向け先番号</param>
 	/// <param name="num">コントローラ番号</param>
 	/// <returns>傾いていればTrue、そうでなければFalse</returns>
-	/// <seealso cref="Xinput::Analog"/>
-	bool GetThumbR(Xinput::Analog analogState, Xinput::PLAYER_NUM num);
+	/// <seealso cref="Xinput::ThumbTilt"/>
+	bool TiltedRightThumb(Xinput::ThumbTilt thumbTilt, Xinput::PLAYER_NUM num);
 
 	/// <summary>
 	/// XinputDeviceでゲームパッドの左アナログスティック入力取得
 	/// </summary>
-	/// <param name="analogState">スティックの方向け先番号</param>
+	/// <param name="thumbTilt">スティックの方向け先番号</param>
 	/// <param name="num">コントローラ番号</param>
 	/// <returns>傾き具合の数値　MAX＝32767　MIN＝-32768</returns>
-	/// <seealso cref="Xinput::Analog"/>
-	int GetThumbLValue(Xinput::AnalogAxis analogState, Xinput::PLAYER_NUM num);
+	/// <seealso cref="Xinput::ThumbTilt"/>
+	int GetLeftThumbValue(Xinput::ThumbTiltAxis thumbTilt, Xinput::PLAYER_NUM num);
 
 	/// <summary>
 	/// XinputDeviceでゲームパッドの右アナログスティック入力取得
 	/// </summary>
-	/// <param name="analogState">スティックの方向け先番号</param>
+	/// <param name="thumbTilt">スティックの方向け先番号</param>
 	/// <param name="num">コントローラ番号</param>
 	/// <returns>傾き具合の数値　MAX＝32767　MIN＝-32768</returns>
-	/// <seealso cref="Xinput::Analog"/>
-	int GetThumbRValue(Xinput::AnalogAxis analogState, Xinput::PLAYER_NUM num);
+	/// <seealso cref="Xinput::ThumbTilt"/>
+	int GetRightThumbValue(Xinput::ThumbTiltAxis thumbTilt, Xinput::PLAYER_NUM num);
 
 	/// <summary>
 	/// XinputDeviceでゲームパッドの左アナログスティック入力状態取得
 	/// </summary>
-	/// <param name="analogState">スティックの方向け先番号</param>
+	/// <param name="thumbTilt">スティックの方向け先番号</param>
 	/// <param name="num">コントローラ番号</param>
 	/// <returns>方向け状態</returns>
-	/// <seealso cref="Xinput::Analog"/>
+	/// <seealso cref="Xinput::ThumbTilt"/>
 	/// <seealso cref="Xinput::PADSTATE"/>
-	Xinput::PADSTATE GetThumbLState(Xinput::Analog analogState, Xinput::PLAYER_NUM num);
+	Xinput::PADSTATE GetLeftThumbState(Xinput::ThumbTilt thumbTilt, Xinput::PLAYER_NUM num);
 
 	/// <summary>
 	/// XinputDeviceでゲームパッドの左アナログスティック入力状態取得
 	/// </summary>
-	/// <param name="analogState">スティックの方向け先番号</param>
+	/// <param name="thumbTilt">スティックの方向け先番号</param>
 	/// <param name="num">コントローラ番号</param>
 	/// <returns>方向け状態</returns>
-	/// <seealso cref="Xinput::Analog"/>
+	/// <seealso cref="Xinput::ThumbTilt"/>
 	/// <seealso cref="Xinput::PADSTATE"/>
-	Xinput::PADSTATE GetThumbRState(Xinput::Analog analogState, Xinput::PLAYER_NUM num);
+	Xinput::PADSTATE GetRightThumbState(Xinput::ThumbTilt thumbTilt, Xinput::PLAYER_NUM num);
 
 	/// <summary>
 	/// XinputDeviceでゲームパッドの右トリガー入力状態取得
@@ -124,7 +124,7 @@ public:
 	/// <param name="num">コントローラ番号</param>
 	/// <returns>押下状態</returns>
 	/// <seealso cref="Xinput::PADSTATE"/>
-	Xinput::PADSTATE GetTriggerRState(Xinput::PLAYER_NUM num);
+	Xinput::PADSTATE GetRightTriggerState(Xinput::PLAYER_NUM num);
 
 	/// <summary>
 	/// XinputDeviceでゲームパッドの左トリガー入力状態取得
@@ -132,7 +132,7 @@ public:
 	/// <param name="num">コントローラ番号</param>
 	/// <returns>押下状態</returns>
 	/// <seealso cref="Xinput::PADSTATE"/>
-	Xinput::PADSTATE GetTriggerLState(Xinput::PLAYER_NUM num);
+	Xinput::PADSTATE GetLeftTriggerState(Xinput::PLAYER_NUM num);
 
 	/// <summary>
 	/// 左右のバイブレーションモーターを動作させる
@@ -163,65 +163,65 @@ public:
 	/// <summary>
 	/// すべてのゲームパッドのトリガーの入力取得
 	/// </summary>
-	/// <param name="Trigger">トリガーの左右認識番号</param>
+	/// <param name="trigger">トリガーの左右認識番号</param>
 	/// <returns>0～255の値、押してなければ0</returns>
-	/// <seealso cref="Xinput::AnalogTrigger"/>
+	/// <seealso cref="Xinput::trigger"/>
 	/// <remarks>入力はPLAYER_01優先</remarks>	
-	int GetTriggerValue(Xinput::AnalogTrigger Trigger);
+	int GetTriggerValue(Xinput::Trigger Trigger);
 
 	/// <summary>
 	/// すべてのゲームパッドの左アナログスティック入力取得
 	/// </summary>
-	/// <param name="analogState">スティックの方向け先番号</param>
+	/// <param name="thumbTilt">スティックの方向け先番号</param>
 	/// <returns>傾いていればTrue、そうでなければFalse</returns>
-	/// <seealso cref="Xinput::Analog"/>
+	/// <seealso cref="Xinput::ThumbTilt"/>
 	/// <remarks>入力はPLAYER_01優先</remarks>	
-	bool GetThumbL(Xinput::Analog analogState);
+	bool TiltedLeftThumb(Xinput::ThumbTilt thumbTilt);
 
 	/// <summary>
 	/// すべてのゲームパッドの右アナログスティック入力取得
 	/// </summary>
-	/// <param name="analogState">スティックの方向け先番号</param>
+	/// <param name="thumbTilt">スティックの方向け先番号</param>
 	/// <returns>傾いていればTrue、そうでなければFalse</returns>
-	/// <seealso cref="Xinput::Analog"/>
+	/// <seealso cref="Xinput::ThumbTilt"/>
 	/// <remarks>入力はPLAYER_01優先</remarks>	
-	bool GetThumbR(Xinput::Analog analogState);
+	bool TiltedRightThumb(Xinput::ThumbTilt thumbTilt);
 
 	/// <summary>
 	/// すべてのゲームパッドの左アナログスティック入力取得
 	/// </summary>
-	/// <param name="analogState">スティックの方向け先番号</param>
+	/// <param name="thumbTilt">スティックの方向け先番号</param>
 	/// <returns>傾き具合の数値　MAX＝32767　MIN＝-32768</returns>
-	/// <seealso cref="Xinput::Analog"/>
+	/// <seealso cref="Xinput::ThumbTilt"/>
 	/// <remarks>入力はPLAYER_01優先</remarks>	
-	int GetThumbLValue(Xinput::AnalogAxis analogState);
+	int GetLeftThumbValue(Xinput::ThumbTiltAxis thumbTilt);
 
 	/// <summary>
 	/// すべてのゲームパッドの右アナログスティック入力取得
 	/// </summary>
-	/// <param name="analogState">スティックの方向け先番号</param>
+	/// <param name="thumbTilt">スティックの方向け先番号</param>
 	/// <returns>傾き具合の数値　MAX＝32767　MIN＝-32768</returns>
-	/// <seealso cref="Xinput::Analog"/>
+	/// <seealso cref="Xinput::ThumbTilt"/>
 	/// <remarks>入力はPLAYER_01優先</remarks>	
-	int GetThumbRValue(Xinput::AnalogAxis analogState);
+	int GetRightThumbValue(Xinput::ThumbTiltAxis thumbTilt);
 
 	/// <summary>
 	/// すべてのゲームパッドの右アナログスティック入力取得
 	/// </summary>
-	/// <param name="analogState">スティックの方向け先番号</param>
+	/// <param name="thumbTilt">スティックの方向け先番号</param>
 	/// <returns>傾き具合の数値　MAX＝32767　MIN＝-32768</returns>
-	/// <seealso cref="Xinput::Analog"/>
+	/// <seealso cref="Xinput::ThumbTilt"/>
 	/// <remarks>入力はPLAYER_01優先</remarks>	
-	Xinput::PADSTATE GetThumbLState(Xinput::Analog analogState);
+	Xinput::PADSTATE GetLeftThumbState(Xinput::ThumbTilt thumbTilt);
 
 	/// <summary>
 	/// すべてのゲームパッドの右アナログスティック入力取得
 	/// </summary>
-	/// <param name="analogState">スティックの方向け先番号</param>
+	/// <param name="thumbTilt">スティックの方向け先番号</param>
 	/// <returns>傾き具合の数値　MAX＝32767　MIN＝-32768</returns>
-	/// <seealso cref="Xinput::Analog"/>
+	/// <seealso cref="Xinput::ThumbTilt"/>
 	/// <remarks>入力はPLAYER_01優先</remarks>	
-	Xinput::PADSTATE GetThumbRState(Xinput::Analog analogState);
+	Xinput::PADSTATE GetRightThumbState(Xinput::ThumbTilt thumbTilt);
 
 	/// <summary>
 	/// すべてのゲームパッドの右トリガー入力状態取得
@@ -229,7 +229,7 @@ public:
 	/// <returns>押下状態</returns>
 	/// <seealso cref="Xinput::PADSTATE"/>
 	/// <remarks>入力はPLAYER_01優先</remarks>	
-	Xinput::PADSTATE GetTriggerRState();
+	Xinput::PADSTATE GetRightTriggerState();
 
 	/// <summary>
 	/// すべてのゲームパッドの左トリガー入力状態取得
@@ -237,13 +237,13 @@ public:
 	/// <returns>押下状態</returns>
 	/// <seealso cref="Xinput::PADSTATE"/>
 	/// <remarks>入力はPLAYER_01優先</remarks>	
-	Xinput::PADSTATE GetTriggerLState();
+	Xinput::PADSTATE GetLeftTriggerState();
 
 	/// <summary>
 	/// すべてのゲームパッドの左右のバイブレーションモーターを動作させる
 	/// </summary>
-	/// <param name="LeftValue">バイブレーション値 MAX＝65535　MIN＝0</param>
-	/// <param name="RightValue">バイブレーション値 MAX＝65535　MIN＝0</param>
+	/// <param name="leftValue">バイブレーション値 MAX＝65535　MIN＝0</param>
+	/// <param name="rightValue">バイブレーション値 MAX＝65535　MIN＝0</param>
 	/// <remarks>右は高周波モーター、左は低周波モーター</remarks>	
 	void RunVibration(unsigned int leftValue, unsigned int rightValue);
 
