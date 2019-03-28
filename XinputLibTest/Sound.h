@@ -69,14 +69,14 @@ private:
 
 	SoundLib::SoundsManager m_soundsManager;
 
-	const TCHAR m_TEXT_END = _T('\0');
+	const TCHAR TEXT_END = _T('\0');
 
 	std::map<const TCHAR*, SimultaneousKeys> m_simultaneousKeys;
 
-	std::vector<SoundKey> m_SoundKey;
+	std::vector<SoundKey> m_soundKey;
 
 	SoundType GetSoundType(int arrayNum) {
-		return m_SoundKey[arrayNum].Type;
+		return m_soundKey[arrayNum].Type;
 	}
 
 };

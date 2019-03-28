@@ -34,7 +34,7 @@ void Sound::AddFile(const TCHAR * pFilePath, const TCHAR * pKey, SoundType type)
 		SoundKey soundKey;
 		soundKey.Key = pKey;
 		soundKey.Type = type;
-		m_SoundKey.emplace_back(soundKey);
+		m_soundKey.emplace_back(soundKey);
 	}
 }
 
@@ -57,14 +57,14 @@ void Sound::AddSimultaneousFile(const TCHAR * pFilePath, const TCHAR * pKey, Sou
 
 		
 		size_t simultaneousKeyLength = keyLength + 1/* + (i / SimultaneousKeys::SIMULTANEOUS_NUM_MAX)*/;
-		m_simultaneousKeys[pKey].m_pKeys[i][simultaneousKeyLength] = m_TEXT_END;
+		m_simultaneousKeys[pKey].m_pKeys[i][simultaneousKeyLength] = TEXT_END;
 
 		successAddFile = m_soundsManager.AddFile(pFilePath, m_simultaneousKeys[pKey].m_pKeys[i]);
 		if (successAddFile) {
 			SoundKey soundKey;
 			soundKey.Key = m_simultaneousKeys[pKey].m_pKeys[i];
 			soundKey.Type = type;
-			m_SoundKey.emplace_back(soundKey);
+			m_soundKey.emplace_back(soundKey);
 		}
 	}
 }
@@ -112,7 +112,7 @@ void Sound::Stop(const TCHAR * pKey)
 
 void Sound::Stop(SoundType type)
 {
-	for (auto i : m_SoundKey) {
+	for (auto i : m_soundKey) {
 		if (type != i.Type && type != ALL_TYPE) continue;
 		m_soundsManager.Stop(i.Key);
 	}
@@ -126,7 +126,7 @@ void Sound::SetVolume(const TCHAR * pKey, int vol)
 
 void Sound::SetVolume(int vol, SoundType type)
 {
-	for (auto i : m_SoundKey) {
+	for (auto i : m_soundKey) {
 		if (type != i.Type && type != ALL_TYPE) continue;
 		m_soundsManager.SetVolume(i.Key, vol);
 	}
