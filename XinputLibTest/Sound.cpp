@@ -1,4 +1,8 @@
-﻿#include "Sound.h"
+﻿/**
+* @file
+* @auther Toshiya Matsuoka
+*/
+#include "Sound.h"
 
 using namespace SoundLib;
 

@@ -1,6 +1,9 @@
 ﻿#ifndef SOUND_H
 #define SOUND_H
-
+/**
+* @file
+* @auther Toshiya Matsuoka
+*/
 #include <windows.h>
 #include <tchar.h>
 
