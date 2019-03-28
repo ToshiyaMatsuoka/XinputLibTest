@@ -54,14 +54,14 @@ void Sound::AddSimultaneousFile(const TCHAR* pFilePath, const TCHAR* pKey, Sound
 		m_simultaneousKeys[pKey].m_pKeys[i][simultaneousKeyLength] = TEXT_END;
 
 		successAddFile = m_soundsManager.AddFile(pFilePath, m_simultaneousKeys[pKey].m_pKeys[i]);
-		if (successAddFile) 
-		{
-			SoundKey soundKey;
-			soundKey.Key = pKey;
-			soundKey.Type = type;
-			soundKey.isSimultaneous = true;
-			m_soundKeys.emplace_back(soundKey);
-		}
+	}
+	if (successAddFile)
+	{
+		SoundKey soundKey;
+		soundKey.Key = pKey;
+		soundKey.Type = type;
+		soundKey.isSimultaneous = true;
+		m_soundKeys.emplace_back(soundKey);
 	}
 }
 
@@ -127,7 +127,7 @@ void Sound::Stop(SoundType type)
 	for (auto i : m_soundKeys) 
 	{
 		if (type != i.Type && type != ALL_TYPE) continue;
-		m_soundsManager.Stop(i.Key);
+		Stop(i.Key);
 	}
 }
 
