@@ -110,7 +110,7 @@ public:
 	/// </summary>
 	/// <param name="pKey">音声ファイルを識別するキー</param>
 	/// <returns>ボリューム(0:無音　100:音源ボリューム)</returns>
-	uint8_t GetVolume(const TCHAR* pKey) const;
+	uint8_t GetVolume(const TCHAR* pKey);
 
 	/// <summary>
 	/// 再生速度とピッチの変化率を取得する。
@@ -122,14 +122,13 @@ public:
 	/// 2.0の場合、再生速度2倍で1オクターブ高音。
 	/// 0.5の場合、再生速度1/2で1オクターブ低音。
 	/// </remarks>
-	float GetFrequencyRatio(const TCHAR* pKey) const;
+	float GetFrequencyRatio(const TCHAR* pKey);
 
 	/// <summary>
 	/// 再生速度とピッチの変化率を設定する。
 	/// </summary>
 	/// <param name="pKey">音声ファイルを識別するキー</param>
 	/// <param name="ratio">音源からの変化率</param>
-	/// <returns>成否</returns>
 	/// <remarks>
 	/// <para>
 	/// 1.0の場合、音源から変化なし。
@@ -139,6 +138,22 @@ public:
 	/// <para>設定可能最大値は4。</para>
 	/// </remarks>
 	void SetFrequencyRatio(const TCHAR* pKey, float ratio);
+
+	/// <summary>
+	/// 再生速度とピッチの変化率を設定する。
+	/// </summary>
+	/// <param name="ratio">音源からの変化率</param>
+	/// <param name="type">音声ファイルを識別する音声種別</param>
+	/// <returns>成否</returns>
+	/// <remarks>
+	/// <para>
+	/// 1.0の場合、音源から変化なし。
+	/// 2.0の場合、再生速度2倍で1オクターブ高音。
+	/// 0.5の場合、再生速度1/2で1オクターブ低音。
+	/// </para>
+	/// <para>設定可能最大値は4。</para>
+	/// </remarks>
+	void SetFrequencyRatio(float ratio, SoundType type = ALL_TYPE);
 
 	/// <summary>
 	/// ボリュームを設定する。
@@ -181,14 +196,14 @@ private:
 	/// </summary>
 	/// <param name="pKey"></param>
 	/// <returns>AddSimultaneousFile()で生成していれば真</returns>
-	bool IsSimultaneousKey(const TCHAR* pKey);
+	bool IsSimultaneousKey(const TCHAR* pKey) const;
 
 	/// <summary>
 	/// 同じキーが存在するか確認する
 	/// </summary>
 	/// <param name="pKey"></param>
 	/// <returns>存在すれば真、しなければ偽</returns>
-	bool FindSameKey(const TCHAR* pKey);
+	bool FindSameKey(const TCHAR* pKey) const;
 };
 
 //
