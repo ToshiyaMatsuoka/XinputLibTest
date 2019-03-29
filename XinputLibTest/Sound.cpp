@@ -31,10 +31,10 @@ void Sound::AddFile(const TCHAR* pFilePath, const TCHAR* pKey, SoundType type)
 	successAddFile = m_soundsManager.AddFile(pFilePath, pKey);
 	if (successAddFile) 
 	{
-		SoundKey soundKey;
-		soundKey.Key = pKey;
-		soundKey.Type = type;
-		m_soundKeys.emplace_back(soundKey);
+		KeyData keyData;
+		keyData.Key = pKey;
+		keyData.Type = type;
+		m_keyData.emplace_back(keyData);
 	}
 }
 
@@ -43,15 +43,16 @@ void Sound::AddSimultaneousFile(const TCHAR* pFilePath, const TCHAR* pKey, Sound
 {
 	if (FindSameKey(pKey)) return;
 	size_t keyLength = _tcsclen(pKey);
-	size_t additionalKeyLength = keyLength + 3;	// 数字と\0の数足す
+	size_t additionalKeyLength = keyLength + 3;	// 追加する数字と\0の数足す
 	bool successAddFile = false;
 
 	for (int i = 0; i < SimultaneousKeys::SIMULTANEOUS_NUM_MAX; ++i)
 	{
 		m_simultaneousKeys[pKey].m_pKeys[i] = new TCHAR[additionalKeyLength];
 
+		// キーのコピー
 		_tcscpy_s(m_simultaneousKeys[pKey].m_pKeys[i], additionalKeyLength, pKey);
-
+		// 末尾に足す数字を文字に変換し追加
 		_itot_s(i, &m_simultaneousKeys[pKey].m_pKeys[i][keyLength], sizeof(TCHAR), 10);
 
 		size_t simultaneousKeyLength = keyLength + 1;
@@ -61,11 +62,11 @@ void Sound::AddSimultaneousFile(const TCHAR* pFilePath, const TCHAR* pKey, Sound
 	}
 	if (successAddFile)
 	{
-		SoundKey soundKey;
-		soundKey.Key = pKey;
-		soundKey.Type = type;
-		soundKey.isSimultaneous = true;
-		m_soundKeys.emplace_back(soundKey);
+		KeyData keyData;
+		keyData.Key = pKey;
+		keyData.Type = type;
+		keyData.IsSimultaneous = true;
+		m_keyData.emplace_back(keyData);
 	}
 }
 
@@ -74,8 +75,11 @@ void Sound::OneShotSimultaneous(const TCHAR* pKey)
 {
 	if (false == FindSameKey(pKey))return;
 
-	if (false == IsSimultaneousKey(pKey)) return;
-
+	if (false == IsSimultaneousKey(pKey)) 
+	{
+		Common::OutputDebugString("ERROR:Simultaneousではないキー%sが指定されました。\n", pKey);
+		return;
+	}
 	int currentNum = m_simultaneousKeys[pKey].m_currentPlayNum;
 
 	int prevPrevNum = currentNum - 2;
@@ -91,25 +95,41 @@ void Sound::OneShotSimultaneous(const TCHAR* pKey)
 
 void Sound::LoopStart(const TCHAR* pKey)
 {
-	if (IsSimultaneousKey(pKey)) return;
+	if (IsSimultaneousKey(pKey))
+	{
+		Common::OutputDebugString("ERROR:Simultaneousキー%sが指定されました。\n", pKey);
+		return;
+	}
 	m_soundsManager.Start(pKey, true);
 }
 
 void Sound::OneShotStart(const TCHAR* pKey)
 {
-	if (IsSimultaneousKey(pKey)) return;
+	if (IsSimultaneousKey(pKey))
+	{
+		Common::OutputDebugString("ERROR:Simultaneousキー%sが指定されました。\n", pKey);
+		return;
+	}
 	m_soundsManager.Start(pKey, false);
 }
 
 void Sound::Pause(const TCHAR* pKey)
 {
-	if (IsSimultaneousKey(pKey)) return;
+	if (IsSimultaneousKey(pKey))
+	{
+		Common::OutputDebugString("ERROR:Simultaneousキー%sが指定されました。\n", pKey);
+		return;
+	}
 	m_soundsManager.Pause(pKey);
 }
 
 void Sound::Resume(const TCHAR* pKey)
 {
-	if (IsSimultaneousKey(pKey)) return;
+	if (IsSimultaneousKey(pKey))
+	{
+		Common::OutputDebugString("ERROR:Simultaneousキー%sが指定されました。\n", pKey);
+		return;
+	}
 	m_soundsManager.Resume(pKey);
 }
 
@@ -128,15 +148,20 @@ void Sound::Stop(const TCHAR* pKey)
 
 void Sound::Stop(SoundType type)
 {
-	for (auto i : m_soundKeys) 
+	for (auto keyData : m_keyData) 
 	{
-		if (type != i.Type && type != ALL_TYPE) continue;
-		Stop(i.Key);
+		if (type != keyData.Type && type != ALL_TYPE) continue;
+		Stop(keyData.Key);
 	}
 }
 
 PlayingStatus Sound::GetStatus(const TCHAR* pKey) const
 {
+	if (IsSimultaneousKey(pKey))
+	{
+		Common::OutputDebugString("ERROR:Simultaneousキー%sが指定されました。\n", pKey);
+		return Stopped;
+	}
 	return m_soundsManager.GetStatus(pKey);
 }
 
@@ -177,10 +202,10 @@ void Sound::SetFrequencyRatio(const TCHAR* pKey, float ratio)
 
 void Sound::SetFrequencyRatio(float ratio, SoundType type)
 {
-	for (auto i : m_soundKeys) 
+	for (auto keyData : m_keyData) 
 	{
-		if (type != i.Type && type != ALL_TYPE) continue;
-		m_soundsManager.SetVolume(i.Key, ratio);
+		if (type != keyData.Type && type != ALL_TYPE) continue;
+		m_soundsManager.SetFrequencyRatio(keyData.Key, ratio);
 	}
 }
 
@@ -199,19 +224,19 @@ void Sound::SetVolume(int vol, const TCHAR* pKey)
 
 void Sound::SetVolume(int vol, SoundType type)
 {
-	for (auto i : m_soundKeys) 
+	for (auto keyData : m_keyData) 
 	{
-		if (type != i.Type && type != ALL_TYPE) continue;
-		m_soundsManager.SetVolume(i.Key, vol);
+		if (type != keyData.Type && type != ALL_TYPE) continue;
+		m_soundsManager.SetVolume(keyData.Key, vol);
 	}
 }
 
 bool Sound::IsSimultaneousKey(const TCHAR* pKey) const
 {
-	for (auto i : m_soundKeys)
+	for (auto keyData : m_keyData)
 	{
-		if (i.Key != pKey) continue;
-		if (i.isSimultaneous == true)
+		if (keyData.Key != pKey) continue;
+		if (keyData.IsSimultaneous == true)
 		{
 			return true;
 		}
@@ -222,11 +247,12 @@ bool Sound::IsSimultaneousKey(const TCHAR* pKey) const
 
 bool Sound::FindSameKey(const TCHAR* pKey) const
 {
-	for (auto i : m_soundKeys)
+	for (auto keyData : m_keyData)
 	{
-		if (i.Key != pKey) continue;
+		if (keyData.Key != pKey) continue;
 		return true;
 	}
+	Common::OutputDebugString("ERROR:キー%sが見つかりませんでした。\n", pKey);
 	return false;
 }
 

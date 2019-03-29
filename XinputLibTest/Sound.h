@@ -16,18 +16,14 @@
 class Sound
 {
 public:
-
+	/// <summary>
+	/// 音声種別
+	/// </summary>
 	enum SoundType {
 		ALL_TYPE,
 		BGM,
 		SE,
 		VOICE,
-	};
-
-	struct SoundKey {
-		const TCHAR* Key;
-		SoundType Type;
-		bool isSimultaneous = false;
 	};
 
 	Sound();
@@ -174,9 +170,14 @@ public:
 
 private:
 	
-	Sound(Sound& sound) = delete;
-
-	Sound& operator=(Sound& sound) = delete;
+	/// <summary>
+	/// 設定するキーに対する管理データ
+	/// </summary>
+	struct KeyData {
+		const TCHAR* Key;
+		SoundType Type;
+		bool IsSimultaneous = false;
+	};
 
 	struct SimultaneousKeys
 	{
@@ -186,13 +187,17 @@ private:
 		int m_currentPlayNum = 0;
 	};
 
+	Sound(Sound& sound) = delete;
+
+	Sound& operator=(Sound& sound) = delete;
+
 	SoundLib::SoundsManager m_soundsManager;
 
 	const TCHAR TEXT_END = _T('\0');
 
 	std::map<const TCHAR*, SimultaneousKeys> m_simultaneousKeys;
 
-	std::vector<SoundKey> m_soundKeys;
+	std::vector<KeyData> m_keyData;
 
 	/// <summary>
 	/// AddSimultaneousFile()で生成したキーか調べる
@@ -208,10 +213,5 @@ private:
 	/// <returns>存在すれば真、しなければ偽</returns>
 	bool FindSameKey(const TCHAR* pKey) const;
 };
-
-//
-//bgm、seなどの振り分けを使用者ができるようにする
-//振り分けたそれぞれに停止と音量設定ができるようにする
-//
 
 #endif // !SOUND_H
