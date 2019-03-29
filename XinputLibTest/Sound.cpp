@@ -3,8 +3,11 @@
 * @auther Toshiya Matsuoka
 */
 #include "Sound.h"
+#include "WriteDebugLog.h"
 
 using namespace SoundLib;
+
+
 
 Sound::Sound()
 {
@@ -73,11 +76,11 @@ void Sound::AddSimultaneousFile(const TCHAR* pFilePath, const TCHAR* pKey, Sound
 //一気に作った音声オブジェクトの再生
 void Sound::OneShotSimultaneous(const TCHAR* pKey)
 {
-	if (false == FindSameKey(pKey))return;
+	if (false == FindSameKey(pKey)) return;
 
 	if (false == IsSimultaneousKey(pKey)) 
 	{
-		Common::OutputDebugString("ERROR:Simultaneousではないキー%sが指定されました。\n", pKey);
+		WriteDebugLog::OutputStrWithKey("ERROR:Simultaneousではないキー[%s]が指定されました。\n", pKey);
 		return;
 	}
 	int currentNum = m_simultaneousKeys[pKey].m_currentPlayNum;
@@ -97,7 +100,7 @@ void Sound::LoopStart(const TCHAR* pKey)
 {
 	if (IsSimultaneousKey(pKey))
 	{
-		Common::OutputDebugString("ERROR:Simultaneousキー%sが指定されました。\n", pKey);
+		WriteDebugLog::OutputStrWithKey("ERROR:Simultaneousキー[%s]が指定されました。\n", pKey);
 		return;
 	}
 	m_soundsManager.Start(pKey, true);
@@ -107,7 +110,7 @@ void Sound::OneShotStart(const TCHAR* pKey)
 {
 	if (IsSimultaneousKey(pKey))
 	{
-		Common::OutputDebugString("ERROR:Simultaneousキー%sが指定されました。\n", pKey);
+		WriteDebugLog::OutputStrWithKey("ERROR:Simultaneousキー[%s]が指定されました。\n", pKey);
 		return;
 	}
 	m_soundsManager.Start(pKey, false);
@@ -117,7 +120,7 @@ void Sound::Pause(const TCHAR* pKey)
 {
 	if (IsSimultaneousKey(pKey))
 	{
-		Common::OutputDebugString("ERROR:Simultaneousキー%sが指定されました。\n", pKey);
+		WriteDebugLog::OutputStrWithKey("ERROR:Simultaneousキー[%s]が指定されました。\n", pKey);
 		return;
 	}
 	m_soundsManager.Pause(pKey);
@@ -127,7 +130,7 @@ void Sound::Resume(const TCHAR* pKey)
 {
 	if (IsSimultaneousKey(pKey))
 	{
-		Common::OutputDebugString("ERROR:Simultaneousキー%sが指定されました。\n", pKey);
+		WriteDebugLog::OutputStrWithKey("ERROR:Simultaneousキー[%s]が指定されました。\n", pKey);
 		return;
 	}
 	m_soundsManager.Resume(pKey);
@@ -157,9 +160,10 @@ void Sound::Stop(SoundType type)
 
 PlayingStatus Sound::GetStatus(const TCHAR* pKey) const
 {
+	if (false == FindSameKey(pKey)) return Stopped;
 	if (IsSimultaneousKey(pKey))
 	{
-		Common::OutputDebugString("ERROR:Simultaneousキー%sが指定されました。\n", pKey);
+		WriteDebugLog::OutputStrWithKey("ERROR:Simultaneousキー[%s]が指定されました。\n", pKey);
 		return Stopped;
 	}
 	return m_soundsManager.GetStatus(pKey);
@@ -167,6 +171,7 @@ PlayingStatus Sound::GetStatus(const TCHAR* pKey) const
 
 uint8_t Sound::GetVolume(const TCHAR* pKey)
 {
+	if (false == FindSameKey(pKey)) return 0;
 	if (IsSimultaneousKey(pKey))
 	{
 		TCHAR* key = m_simultaneousKeys[pKey].m_pKeys[0];
@@ -178,6 +183,7 @@ uint8_t Sound::GetVolume(const TCHAR* pKey)
 
 float Sound::GetFrequencyRatio(const TCHAR* pKey)
 {
+	if (false == FindSameKey(pKey)) return 0;
 	if (IsSimultaneousKey(pKey))
 	{
 		TCHAR* key = m_simultaneousKeys[pKey].m_pKeys[0];
@@ -189,6 +195,7 @@ float Sound::GetFrequencyRatio(const TCHAR* pKey)
 
 void Sound::SetFrequencyRatio(const TCHAR* pKey, float ratio)
 {
+	if (false == FindSameKey(pKey))return;
 	if (IsSimultaneousKey(pKey))
 	{
 		for (auto pKey : m_simultaneousKeys[pKey].m_pKeys)
@@ -211,6 +218,7 @@ void Sound::SetFrequencyRatio(float ratio, SoundType type)
 
 void Sound::SetVolume(int vol, const TCHAR* pKey)
 {
+	if (false == FindSameKey(pKey))return;
 	if (IsSimultaneousKey(pKey))
 	{
 		for (auto pKey : m_simultaneousKeys[pKey].m_pKeys)
@@ -252,7 +260,7 @@ bool Sound::FindSameKey(const TCHAR* pKey) const
 		if (keyData.Key != pKey) continue;
 		return true;
 	}
-	Common::OutputDebugString("ERROR:キー%sが見つかりませんでした。\n", pKey);
+	WriteDebugLog::OutputStrWithKey("ERROR:キー[%s]が見つかりませんでした。\n", pKey);
 	return false;
 }
 
